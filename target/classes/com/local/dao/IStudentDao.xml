@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.local.dao.IStudentDao">
+
+    <!-- 定义sql片段 -->
+    <sql id="customSql">
+        select id,name,email,age from student
+    </sql>
+
+    <!-- if动态sql
+            <if test="使用参数java对象的属性值作为判断条件">
+    -->
+    <select id="selectStudentIf" resultType="com.local.domain.Student">
+        <include refid="customSql" /> where 1=1
+        <if test="name != null and name != '' ">
+           and name = #{name}
+        </if>
+        <if test=" age > 0 ">
+           and age > #{age}
+        </if>
+    </select>
+
+    <!-- where动态sql
+         <where><if>...</if>...</where>
+    -->
+    <select id="selectStudentWhere" resultType="com.local.domain.Student">
+        select id,name,email,age from student
+        <where>
+            <if test="name != null and name != '' ">
+               and name = #{name}
+            </if>
+            <if test=" age > 0 ">
+                or age > #{age}
+            </if>
+        </where>
+    </select>
+
+    <!-- foreach使用1，List<Integer>
+            collection : 表示接口中方法参数的类型，数组使用array，list使用list
+            item : 集合中的元素，占位符
+            open : 开始符号
+            close : 结束符号
+            separator : 分隔符
+    -->
+    <select id="selectStudentForeachOne" resultType="com.local.domain.Student">
+        select id,name,email,age from student where id in
+        <foreach collection="list" item="myid" open="(" close=")" separator=",">
+            #{myid}
+        </foreach>
+    </select>
+
+    <!--foreach使用1，List<Student>
+           item : 集合中的元素  本例是Student 所以可以stu.id
+    -->
+    <select id="selectStudentForeachTwo" resultType="com.local.domain.Student">
+        select id,name,email,age from student where id in
+        <foreach collection="list" item="stu" open="(" close=")" separator=",">
+            #{stu.id}
+        </foreach>
+    </select>
+
+<!--    <select id="selectStudentForeachTwo" resultType="com.local.domain.Student">
+        select id,name,email,age from student where id in (
+        <foreach collection="list" item="stu" separator=",">
+            #{stu.id}
+        </foreach>
+        )
+    </select>-->
+
+</mapper>

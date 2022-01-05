@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 指定properties文件的位置，从类路径根开始查找 -->
+    <properties resource="jdbc.properties" />
+
+    <!-- settings: 控制mybatis全局行为 -->
+    <settings>
+        <!--设置mybatis的输出日志-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <environments default="mydev">
+        <environment id="mydev">
+            <!--
+                transactionManager : mybatis提交事务，回滚事务的方式
+                    type : 事务处理的类型
+                        1、JDBC: 表示mybatis底层调用JDBC中的Connection对象的 commit，rollback
+                        2、MANAGED: 表示把mybatis的事务处理交给其他的容器(服务软件或框架)
+            -->
+            <transactionManager type="JDBC"/>
+            <!--
+                dataSource: 表示数据源，java系中，规定实现了javax.sql.DataSource接口的都是数据源
+                            数据源表示Connection对象的
+                type: 指定数据源的类型
+                    1、POOLED: 使用连接池，myabtis会创建PooledDataSource类
+                    2、UPOOLED: 不使用连接池，在每次执行sql语句，先创建连接，执行sql，在关闭连接
+                                mybatis会创建一个UnPooledDatSource，管理Connection对象的使用
+                    3、JNOI: java命名和目录服务(windows注册表)
+            -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.mysql.driver}"/>
+                <property name="url" value="${jdbc.mysql.url}"/>
+                <property name="username" value="${jdbc.mysql.user}"/>
+                <property name="password" value="${jdbc.mysql.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- sql mapper(sql映射文件的位置)-->
+    <mappers>
+        <!-- 第一种方式，可以指定多个mapper文件-->
+       <!-- <mapper resource="\com\local\dao\IStudentDao.xml"/>
+        <mapper resource="\com\xxx\xxx\xxx.xml"/>-->
+        <!-- 第二种方式:使用包名
+                name : xml文件，所在的包名，这个包中xml文件会全部加载
+        -->
+        <package name="com.local.dao"/>
+        <!--<package name="xxx.xxx.xxx"/>-->
+    </mappers>
+</configuration>
